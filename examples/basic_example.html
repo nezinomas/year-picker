@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Year Picker - Basic Example</title>
+    <link rel="stylesheet" href="../src/year-picker.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            line-height: 1.6;
+            background: #f8f9fa;
+        }
+        
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #6c757d;
+            margin-bottom: 40px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .year-picker-input {
+            width: 100%;
+            max-width: 200px;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            background: white;
+        }
+        
+        .year-picker-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+        
+        .year-picker-input.year-picker-has-value {
+            border-color: #28a745;
+            background: #f8fff9;
+        }
+        
+        .demo-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .demo-section h3 {
+            margin-top: 0;
+            color: #495057;
+        }
+        
+        .output {
+            margin-top: 15px;
+            padding: 10px;
+            background: #e9ecef;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            min-height: 20px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-1px);
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Year Picker - Basic Example</h1>
+        <p class="subtitle">Demonstrates basic usage of the Django Year Picker component</p>
+        
+        <div class="demo-section">
+            <h3>Basic Usage</h3>
+            <div class="form-group">
+                <label for="basic-year">Select Year:</label>
+                <input type="text" id="basic-year" class="year-picker-input" placeholder="Click to select year">
+                <div class="output" id="basic-output">No year selected</div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h3>With Year Range (1990-2030)</h3>
+            <div class="form-group">
+                <label for="range-year">Birth Year:</label>
+                <input type="text" id="range-year" class="year-picker-input" 
+                       data-min-year="1990" data-max-year="2030" 
+                       placeholder="Select birth year">
+                <div class="output" id="range-output">No year selected</div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h3>Pre-filled with Current Year</h3>
+            <div class="form-group">
+                <label for="current-year">Current Year:</label>
+                <input type="text" id="current-year" class="year-picker-input">
+                <div class="output" id="current-output">Current year loaded</div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h3>Programmatic Control</h3>
+            <div class="form-group">
+                <label for="controlled-year">Controlled Year:</label>
+                <input type="text" id="controlled-year" class="year-picker-input" placeholder="Use buttons below">
+                <div style="margin-top: 10px;">
+                    <button class="btn btn-primary" onclick="setYear2020()">Set 2020</button>
+                    <button class="btn btn-success" onclick="setCurrentYear()">Set Current</button>
+                    <button class="btn btn-secondary" onclick="clearYear()">Clear</button>
+                </div>
+                <div class="output" id="controlled-output">Use buttons to control</div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h3>Event Handling Demo</h3>
+            <div class="form-group">
+                <label for="event-year">Year with Events:</label>
+                <input type="text" id="event-year" class="year-picker-input" placeholder="Select to see events">
+                <div class="output" id="event-output">No events yet</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../src/year-picker.js"></script>
+    <script>
+        // Set current year on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentYear = new Date().getFullYear();
+            setYearPickerValue('current-year', currentYear);
+        });
+        
+        // Basic year field events
+        document.getElementById('basic-year').addEventListener('yearSelected', function(e) {
+            document.getElementById('basic-output').textContent = `Selected: ${e.detail.year}`;
+        });
+        
+        document.getElementById('basic-year').addEventListener('yearCleared', function(e) {
+            document.getElementById('basic-output').textContent = 'Year cleared';
+        });
+        
+        // Range year field events
+        document.getElementById('range-year').addEventListener('yearSelected', function(e) {
+            document.getElementById('range-output').textContent = `Birth year: ${e.detail.year}`;
+        });
+        
+        document.getElementById('range-year').addEventListener('yearCleared', function(e) {
+            document.getElementById('range-output').textContent = 'No birth year selected';
+        });
+        
+        // Current year field events
+        document.getElementById('current-year').addEventListener('change', function(e) {
+            document.getElementById('current-output').textContent = `Current year: ${e.target.value || 'None'}`;
+        });
+        
+        // Controlled year field events
+        document.getElementById('controlled-year').addEventListener('yearSelected', function(e) {
+            document.getElementById('controlled-output').textContent = `Programmatically set: ${e.detail.year}`;
+        });
+        
+        document.getElementById('controlled-year').addEventListener('yearCleared', function(e) {
+            document.getElementById('controlled-output').textContent = 'Programmatically cleared';
+        });
+        
+        // Event demo field
+        let eventCount = 0;
+        document.getElementById('event-year').addEventListener('yearSelected', function(e) {
+            eventCount++;
+            document.getElementById('event-output').textContent = 
+                `Event ${eventCount}: yearSelected - Year: ${e.detail.year}, Programmatic: ${e.detail.programmatic || false}`;
+        });
+        
+        document.getElementById('event-year').addEventListener('yearCleared', function(e) {
+            eventCount++;
+            document.getElementById('event-output').textContent = 
+                `Event ${eventCount}: yearCleared - Old value: ${e.detail.oldValue || 'None'}`;
+        });
+        
+        document.getElementById('event-year').addEventListener('change', function(e) {
+            eventCount++;
+            document.getElementById('event-output').innerHTML += 
+                `<br>Event ${eventCount}: change - Value: ${e.target.value || 'Empty'}`;
+        });
+        
+        // Programmatic control functions
+        function setYear2020() {
+            setYearPickerValue('controlled-year', 2020);
+        }
+        
+        function setCurrentYear() {
+            setYearPickerValue('controlled-year', new Date().getFullYear());
+        }
+        
+        function clearYear() {
+            clearYearPicker('controlled-year');
+        }
+    </script>
+</body>
+</html>

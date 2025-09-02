@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Year Picker - Django Integration Example</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../src/year-picker.css">
+    <style>
+        body {
+            background: #f8f9fa;
+            padding: 40px 0;
+        }
+        
+        .demo-form {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+        
+        .code-block .comment {
+            color: #68d391;
+        }
+        
+        .code-block .keyword {
+            color: #f56565;
+        }
+        
+        .code-block .string {
+            color: #63b3ed;
+        }
+        
+        .modal-demo {
+            margin-top: 40px;
+        }
+        
+        .year-picker-input.form-control {
+            cursor: pointer;
+        }
+        
+        .year-picker-input.year-picker-has-value {
+            border-color: #28a745;
+            background-color: #f8fff9;
+        }
+        
+        .validation-example .is-invalid {
+            border-color: #dc3545;
+        }
+        
+        .validation-example .is-valid {
+            border-color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <h1 class="text-center mb-5">Django Year Picker Integration</h1>
+                
+                <!-- Basic Django Form Example -->
+                <div class="demo-form">
+                    <h2 class="h4 mb-3">Basic Django Form</h2>
+                    <p class="text-muted mb-4">Example of integrating year picker with Django forms and Bootstrap styling.</p>
+                    
+                    <form method="post" action="#" class="needs-validation" novalidate>
+                        <!-- CSRF Token (Django template syntax) -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="birth-year" class="form-label">Birth Year</label>
+                                    <input type="text" 
+                                           id="birth-year" 
+                                           name="birth_year"
+                                           class="form-control year-picker-input" 
+                                           data-min-year="1920" 
+                                           data-max-year="2010"
+                                           placeholder="Select birth year"
+                                           required>
+                                    <div class="invalid-feedback">Please select your birth year.</div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="graduation-year" class="form-label">Graduation Year</label>
+                                    <input type="text" 
+                                           id="graduation-year" 
+                                           name="graduation_year"
+                                           class="form-control year-picker-input" 
+                                           data-min-year="2000" 
+                                           data-max-year="2030"
+                                           placeholder="Select graduation year">
+                                    <div class="form-text">Optional field</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="start-work-year" class="form-label">Started Working</label>
+                                    <input type="text" 
+                                           id="start-work-year" 
+                                           name="start_work_year"
+                                           class="form-control year-picker-input" 
+                                           data-min-year="1980" 
+                                           data-max-year="2024"
+                                           placeholder="Select year">
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="current-year-demo" class="form-label">Current Year (Pre-filled)</label>
+                                    <input type="text" 
+                                           id="current-year-demo" 
+                                           name="current_year"
+                                           class="form-control year-picker-input" 
+                                           readonly>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary me-2">Submit Form</button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="resetForm()">Reset</button>
+                    </form>
+                    
+                    <div class="mt-4">
+                        <h5>Django forms.py Example:</h5>
+                        <div class="code-block">
+<span class="comment"># forms.py</span>
+<span class="keyword">from</span> django <span class="keyword">import</span> forms
+
+<span class="keyword">class</span> UserProfileForm(forms.Form):
+    birth_year = forms.CharField(
+        max_length=<span class="string">4</span>,
+        widget=forms.TextInput(attrs={
+            <span class="string">'class'</span>: <span class="string">'form-control year-picker-input'</span>,
+            <span class="string">'data-min-year'</span>: <span class="string">'1920'</span>,
+            <span class="string">'data-max-year'</span>: <span class="string">'2010'</span>,
+            <span class="string">'placeholder'</span>: <span class="string">'Select birth year'</span>
+        })
+    )
+    
+    graduation_year = forms.CharField(
+        max_length=<span class="string">4</span>,
+        required=<span class="keyword">False</span>,
+        widget=forms.TextInput(attrs={
+            <span class="string">'class'</span>: <span class="string">'form-control year-picker-input'</span>,
+            <span class="string">'data-min-year'</span>: <span class="string">'2000'</span>,
+            <span class="string">'data-max-year'</span>: <span class="string">'2030'</span>
+        })
+    )
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Modal Example -->
+                <div class="demo-form modal-demo">
+                    <h2 class="h4 mb-3">Modal Integration</h2>
+                    <p class="text-muted mb-4">Year picker works seamlessly in Bootstrap modals with automatic z-index handling.</p>
+                    
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#yearModal">
+                        Open Modal with Year Picker
+                    </button>
+                    
+                    <div class="mt-4">
+                        <h5>Modal JavaScript Example:</h5>
+                        <div class="code-block">
+<span class="comment">// Initialize year picker for modal</span>
+$(<span class="string">'#myModal'</span>).on(<span class="string">'shown.bs.modal'</span>, <span class="keyword">function</span>() {
+    initYearPickerForModal(<span class="string">'modal-year-field'</span>, {
+        minYear: <span class="string">2000</span>,
+        maxYear: <span class="string">2030</span>,
+        zIndex: <span class="string">10000</span>
+    });
+});
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Validation Example -->
+                <div class="demo-form validation-example">
+                    <h2 class="h4 mb-3">Form Validation</h2>
+                    <p class="text-muted mb-4">Custom validation with year picker fields.</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="validation-year" class="form-label">Required Year Field</label>
+                                <input type="text" 
+                                       id="validation-year" 
+                                       class="form-control year-picker-input" 
+                                       data-min-year="2000" 
+                                       data-max-year="2024"
+                                       placeholder="Select year"
+                                       required>
+                                <div class="invalid-feedback">Please select a year.</div>
+                                <div class="valid-feedback">Good choice!</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="age-validation" class="form-label">Birth Year (Age Validation)</label>
+                                <input type="text" 
+                                       id="age-validation" 
+                                       class="form-control year-picker-input" 
+                                       data-min-year="1920" 
+                                       data-max-year="2006"
+                                       placeholder="Must be 18+ years old">
+                                <div class="form-text" id="age-feedback">Select your birth year</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="btn btn-success" onclick="validateForm()">Validate Form</button>
+                    <button type="button" class="btn btn-outline-danger" onclick="clearValidation()">Clear Validation</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal -->
+    <div class="modal fade" id="yearModal" tabindex="-1" aria-labelledby="yearModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="yearModalLabel">Year Selection in Modal</h5>
+                    <button type="button" class="btn
