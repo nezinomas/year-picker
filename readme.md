@@ -17,14 +17,14 @@ A modern, lightweight JavaScript year picker component designed for Django input
 ## Project Structure
 
 ```
-year-picker/
+year_picker/
 ├── src/
-│   ├── year-picker.js      # Source JavaScript
-│   └── year-picker.css     # Source CSS
+│   ├── year_picker.js      # Source JavaScript
+│   └── year_picker.css     # Source CSS
 ├── dist/
-│   ├── year-picker.min.js  # Minified JavaScript
-│   ├── year-picker.min.js.map
-│   └── year-picker.min.css # Minified CSS
+│   ├── year_picker.min.js  # Minified JavaScript
+│   ├── year_picker.min.js.map
+│   └── year_picker.min.css # Minified CSS
 ├── examples/
 │   ├── basic.html          # Basic usage example
 │   └── django-example.html # Django integration
@@ -43,16 +43,16 @@ year-picker/
    ```
    static/
    ├── css/
-   │   └── year-picker.min.css
+   │   └── year_picker.min.css
    └── js/
-       └── year-picker.min.js
+       └── year_picker.min.js
    ```
 
 3. Include in your template:
    ```html
    {% load static %}
-   <link rel="stylesheet" href="{% static 'css/year-picker.min.css' %}">
-   <script src="{% static 'js/year-picker.min.js' %}"></script>
+   <link rel="stylesheet" href="{% static 'css/year_picker.min.css' %}">
+   <script src="{% static 'js/year_picker.min.js' %}"></script>
    ```
 
 ### Option 2: Development Version
@@ -61,24 +61,24 @@ Use the source files from `src/` for development:
 
 ```html
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/year-picker.css' %}">
-<script src="{% static 'js/year-picker.js' %}"></script>
+<link rel="stylesheet" href="{% static 'css/year_picker.css' %}">
+<script src="{% static 'js/year_picker.js' %}"></script>
 ```
 
 ### Option 3: NPM (Future)
 
 ```bash
-npm install django-year-picker
+npm install django-year_picker
 ```
 
 ## Basic Usage
 
 ### HTML Setup
 
-Add the `year-picker-input` class to any input field:
+Add the `year_picker-input` class to any input field:
 
 ```html
-<input type="text" id="year-field" class="year-picker-input" 
+<input type="text" id="year-field" class="year_picker-input" 
        data-min-year="1950" data-max-year="2030" placeholder="Select year">
 ```
 
@@ -94,7 +94,7 @@ class MyForm(forms.Form):
     birth_year = forms.CharField(
         max_length=4,
         widget=forms.TextInput(attrs={
-            'class': 'form-control year-picker-input',
+            'class': 'form-control year_picker-input',
             'data-min-year': '1900',
             'data-max-year': '2023',
             'placeholder': 'Select birth year'
@@ -112,7 +112,7 @@ Configure individual fields using HTML data attributes:
 - `data-max-year`: Maximum selectable year (default: 2100)
 
 ```html
-<input type="text" class="year-picker-input" 
+<input type="text" class="year_picker-input" 
        data-min-year="2000" 
        data-max-year="2050">
 ```
@@ -246,9 +246,9 @@ document.getElementById('my-field').addEventListener('change', function(e) {
 
 The component uses these CSS classes for styling:
 
-- `.year-picker-input`: Applied to input fields
-- `.year-picker-dropdown`: Main dropdown container
-- `.year-picker-has-value`: Added when field has a value
+- `.year_picker-input`: Applied to input fields
+- `.year_picker-dropdown`: Main dropdown container
+- `.year_picker-has-value`: Added when field has a value
 - `.year-item.selected`: Currently selected year
 - `.year-item.selectable`: Selectable years
 - `.year-item.disabled`: Disabled years (outside min/max range)
@@ -257,20 +257,20 @@ The component uses these CSS classes for styling:
 
 ```css
 /* Custom input styling */
-.year-picker-input {
+.year_picker-input {
     border: 2px solid #e9ecef;
     border-radius: 8px;
     padding: 12px;
     font-size: 16px;
 }
 
-.year-picker-input:focus {
+.year_picker-input:focus {
     border-color: #007bff;
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
 }
 
 /* Custom dropdown styling */
-.year-picker-dropdown {
+.year_picker-dropdown {
     border-radius: 12px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
 }
@@ -314,7 +314,7 @@ The component uses these CSS classes for styling:
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
-                <input type="text" id="modal-year" class="form-control year-picker-input" 
+                <input type="text" id="modal-year" class="form-control year_picker-input" 
                        data-min-year="2000" data-max-year="2030">
             </div>
         </div>
