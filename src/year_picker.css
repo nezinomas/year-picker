@@ -3,13 +3,6 @@
  * Customize these styles to match your design system
  */
 
-/* Demo form styling - remove in production */
-.demo-form {
-    max-width: 400px;
-    margin: 20px;
-    font-family: Arial, sans-serif;
-}
-
 .form-group {
     margin-bottom: 20px;
 }
@@ -191,48 +184,6 @@
         margin: 0 8px;
     }
 }
-
-/* Dark mode support - uncomment to enable */
-/*
-@media (prefers-color-scheme: dark) {
-    .year-picker-dropdown {
-        background: #2d3748;
-        border-color: #4a5568;
-        color: #e2e8f0;
-    }
-    
-    .year-picker-input {
-        background: #2d3748;
-        border-color: #4a5568;
-        color: #e2e8f0;
-    }
-    
-    .year-picker-nav {
-        background: #4a5568;
-        border-color: #718096;
-        color: #e2e8f0;
-    }
-    
-    .year-picker-nav:hover:not(:disabled) {
-        background: #718096;
-        border-color: #a0aec0;
-    }
-    
-    .year-item.selectable {
-        background: #4a5568;
-        color: #e2e8f0;
-    }
-    
-    .year-item.selectable:hover {
-        background: #718096;
-        border-color: #a0aec0;
-    }
-    
-    .year-item.disabled {
-        color: #718096;
-    }
-}
-*/
 
 /* Animation for smooth appearance */
 @keyframes fadeInUp {
