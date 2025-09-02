@@ -1,57 +1,19 @@
-/**
- * Year Picker Widget Styles
- * Customize these styles to match your design system
- */
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #333;
-}
-
 /* Year picker input field */
 .year-picker-input {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
     cursor: pointer;
-    background: white;
-    font-size: 14px;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.year-picker-input:hover {
-    border-color: #bbb;
-}
-
-.year-picker-input:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-}
-
-.year-picker-input:disabled {
-    background-color: #f8f9fa;
-    cursor: not-allowed;
-    opacity: 0.6;
-}
 
 /* Year picker dropdown */
 .year-picker-dropdown {
     display: none;
     background: white;
     border: 1px solid #ddd;
-    border-radius: 8px;
+    border-radius: 4px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     padding: 12px;
     min-width: 240px;
-    font-family: Arial, sans-serif;
     user-select: none;
     position: absolute;
     z-index: 9999; /* High z-index for modals */
@@ -109,13 +71,45 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 6px;
+    margin-bottom: 12px;
+}
+
+/* Footer with clear button */
+.year-picker-footer {
+    border-top: 1px solid #e9ecef;
+    padding-top: 8px;
+    text-align: center;
+}
+
+.year-picker-clear {
+    background: #dc3545;
+    color: white;
+    border: 1px solid #dc3545;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: none; /* Hidden by default */
+}
+
+.year-picker-clear:hover {
+    background: #c82333;
+    border-color: #bd2130;
+    transform: translateY(-1px);
+}
+
+.year-picker-clear:active {
+    transform: translateY(0);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .year-item {
     padding: 10px 8px;
     text-align: center;
     border-radius: 4px;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 500;
     transition: all 0.2s ease;
     border: 1px solid transparent;
@@ -164,23 +158,23 @@
         min-width: 200px;
         padding: 10px;
     }
-    
+
     .year-picker-grid {
         grid-template-columns: repeat(3, 1fr);
         gap: 4px;
     }
-    
+
     .year-item {
         padding: 8px 6px;
-        font-size: 13px;
+        font-size: 12px;
     }
-    
+
     .year-picker-nav {
         padding: 4px 8px;
         font-size: 13px;
         min-width: 28px;
     }
-    
+
     .year-picker-range {
         font-size: 14px;
         margin: 0 8px;
