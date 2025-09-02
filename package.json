@@ -1,0 +1,55 @@
+{
+  "name": "year-picker",
+  "version": "1.0.0",
+  "description": "A lightweight, year picker widget for web forms and Django applications",
+  "main": "dist/year-picker.min.js",
+  "style": "dist/year-picker.min.css",
+  "files": [
+    "dist/",
+    "src/",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "npm run build:js && npm run build:css",
+    "build:js": "terser src/year-picker.js -o dist/year-picker.min.js --compress --mangle --source-map",
+    "build:css": "cleancss -o dist/year-picker.min.css src/year-picker.css",
+    "dev": "npm run build && npm run watch",
+    "watch": "npm run watch:js & npm run watch:css",
+    "watch:js": "terser src/year-picker.js -o dist/year-picker.min.js --compress --mangle --source-map --watch",
+    "watch:css": "cleancss -o dist/year-picker.min.css src/year-picker.css --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "year-picker",
+    "date-picker",
+    "form-widget",
+    "django",
+    "javascript",
+    "vanilla-js",
+    "ui-component",
+    "calendar",
+    "year-selector"
+  ],
+  "author": "nezinomase <nezinomas@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nezinomas/year-picker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nezinomas/year-picker/issues"
+  },
+  "homepage": "https://github.com/nezinomas/year-picker#readme",
+  "devDependencies": {
+    "terser": "^5.16.0",
+    "clean-css-cli": "^5.6.2"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
