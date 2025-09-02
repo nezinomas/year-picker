@@ -1,9 +1,8 @@
 /* Year picker input field */
 .year-picker-input {
     cursor: pointer;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    touch-action: manipulation;
 }
-
 
 /* Year picker dropdown */
 .year-picker-dropdown {
@@ -12,11 +11,13 @@
     border: 1px solid #ddd;
     border-radius: 4px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    padding: 12px;
-    min-width: 240px;
+    padding: 16px;
+    min-width: 280px;
+    max-width: 90vw;
     user-select: none;
     position: absolute;
-    z-index: 9999; /* High z-index for modals */
+    z-index: 10000; /* Increased base z-index for mobile/modals */
+    touch-action: none;
 }
 
 /* Header with navigation */
@@ -28,6 +29,7 @@
     padding: 0 4px;
 }
 
+/* Navigation buttons */
 .year-picker-nav {
     background: #f8f9fa;
     border: 1px solid #ddd;
@@ -39,18 +41,22 @@
     color: #495057;
     transition: all 0.2s ease;
     min-width: 32px;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: manipulation;
 }
 
 .year-picker-nav:hover:not(:disabled) {
     background: #e9ecef;
     border-color: #adb5bd;
     color: #212529;
+    transform: scale(1.05);
 }
 
 .year-picker-nav:active:not(:disabled) {
     background: #dee2e6;
-    transform: translateY(1px);
+    transform: scale(0.95);
 }
 
 .year-picker-nav:disabled {
@@ -91,17 +97,18 @@
     font-size: 13px;
     font-weight: 500;
     transition: all 0.2s ease;
-    display: none; /* Hidden by default */
+    min-width: 100px;
+    display: none;
 }
 
 .year-picker-clear:hover {
     background: #c82333;
     border-color: #bd2130;
-    transform: translateY(-1px);
+    transform: scale(1.05);
 }
 
 .year-picker-clear:active {
-    transform: translateY(0);
+    transform: scale(0.95);
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -113,7 +120,6 @@
     font-weight: 500;
     transition: all 0.2s ease;
     border: 1px solid transparent;
-    min-height: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -125,11 +131,12 @@
     color: #495057;
 }
 
-.year-item.selectable:hover {
+.year-item.selectable:hover,
+.year-item.selectable:active {
     background: #e9ecef;
     border-color: #dee2e6;
     color: #212529;
-    transform: translateY(-1px);
+    transform: scale(1.05);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -152,15 +159,52 @@
     background: transparent;
 }
 
-/* Responsive design */
-@media (max-width: 480px) {
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
     .year-picker-dropdown {
-        min-width: 200px;
-        padding: 10px;
+        min-width: 260px;
+        padding: 12px;
+        max-width: 95vw;
     }
 
     .year-picker-grid {
         grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+    }
+
+    .year-item {
+        padding: 10px 8px;
+        font-size: 13px;
+    }
+
+    .year-picker-nav {
+        padding: 8px 12px;
+        font-size: 15px;
+        min-width: 44px;
+    }
+
+    .year-picker-range {
+        font-size: 15px;
+        margin: 0 12px;
+    }
+
+    .year-picker-clear {
+        padding: 8px 12px;
+        font-size: 13px;
+        min-width: 80px;
+    }
+}
+
+/* Extra small screens (mobile phones) */
+@media (max-width: 480px) {
+    .year-picker-dropdown {
+        min-width: 240px;
+        max-width: 90vw;
+        padding: 10px;
+    }
+
+    .year-picker-grid {
+        grid-template-columns: repeat(2, 1fr);
         gap: 4px;
     }
 
@@ -172,12 +216,18 @@
     .year-picker-nav {
         padding: 4px 8px;
         font-size: 13px;
-        min-width: 28px;
+        min-width: 40px;
     }
 
     .year-picker-range {
         font-size: 14px;
         margin: 0 8px;
+    }
+
+    .year-picker-clear {
+        padding: 6px 10px;
+        font-size: 12px;
+        min-width: 70px;
     }
 }
 
@@ -197,14 +247,16 @@
     animation: fadeInUp 0.2s ease-out;
 }
 
-/* Modal-specific styling using data attributes (non-intrusive) */
+/* Modal-specific styling */
 .year-picker-dropdown[data-in-modal="true"] {
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25); /* Enhanced shadow for modals */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+    max-height: 70vh; /* Limit height in modals */
+    overflow-y: auto; /* Enable scrolling if content overflows */
 }
 
 /* Positioning indicators */
 .year-picker-dropdown[data-positioned-above="true"] {
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15); /* Shadow pointing up */
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
 }
 
 .year-picker-dropdown[data-positioned-above="true"]:before {
@@ -234,7 +286,16 @@
     filter: drop-shadow(0 -2px 2px rgba(0, 0, 0, 0.1));
 }
 
-/* High priority override for any modal - keeping this for manual override */
+/* High priority override for modals */
 .year-picker-dropdown.force-front {
-    z-index: 99999 !important;
+    z-index: 10001 !important;
+}
+
+/* Prevent text selection on mobile */
+.year-picker-dropdown * {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
