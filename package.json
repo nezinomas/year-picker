@@ -12,7 +12,7 @@
   "scripts": {
     "build": "npm run build:js && npm run build:css",
     "build:js": "terser src/year_picker.js -o dist/year_picker.min.js --compress --mangle --source-map",
-    "build:css": "cleancss -o dist/year-picker.min.css src/year_picker.css",
+    "build:css": "cleancss -o dist/year_picker.min.css src/year_picker.css",
     "dev": "npm run build && npm run watch",
     "watch": "npm run watch:js & npm run watch:css",
     "watch:js": "terser src/year_picker.js -o dist/year_picker.min.js --compress --mangle --source-map --watch",
