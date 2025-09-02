@@ -2,8 +2,8 @@
   "name": "year-picker",
   "version": "1.0.0",
   "description": "A lightweight, year picker widget for web forms and Django applications",
-  "main": "dist/year-picker.min.js",
-  "style": "dist/year-picker.min.css",
+  "main": "dist/year_picker.min.js",
+  "style": "dist/year_picker.min.css",
   "files": [
     "dist/",
     "src/",
@@ -11,12 +11,12 @@
   ],
   "scripts": {
     "build": "npm run build:js && npm run build:css",
-    "build:js": "terser src/year-picker.js -o dist/year-picker.min.js --compress --mangle --source-map",
-    "build:css": "cleancss -o dist/year-picker.min.css src/year-picker.css",
+    "build:js": "terser src/year_picker.js -o dist/year_picker.min.js --compress --mangle --source-map",
+    "build:css": "cleancss -o dist/year-picker.min.css src/year_picker.css",
     "dev": "npm run build && npm run watch",
     "watch": "npm run watch:js & npm run watch:css",
-    "watch:js": "terser src/year-picker.js -o dist/year-picker.min.js --compress --mangle --source-map --watch",
-    "watch:css": "cleancss -o dist/year-picker.min.css src/year-picker.css --watch",
+    "watch:js": "terser src/year_picker.js -o dist/year_picker.min.js --compress --mangle --source-map --watch",
+    "watch:css": "cleancss -o dist/year_picker.min.css src/year_picker.css --watch",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
