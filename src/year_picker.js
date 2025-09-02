@@ -6,49 +6,43 @@ class YearPicker {
         this.maxYear = 2100;
         this.isVisible = false;
         this.dropdownId = options.dropdownId || 'year-picker-dropdown';
+        this.dropdown = null; // Lazy initialization
 
-        // Auto-create dropdown if it doesn't exist
-        this.createDropdownIfNeeded();
+        this.init();
+    }
 
-        this.dropdown = document.getElementById(this.dropdownId);
+    createDropdown() {
+        const dropdown = document.createElement('div');
+        dropdown.id = this.dropdownId;
+        dropdown.className = 'year-picker-dropdown';
+        dropdown.style.display = 'none'; // Hidden initially
+        dropdown.innerHTML = `
+            <div class="year-picker-header">
+                <button class="year-picker-nav prev" type="button">&lt;</button>
+                <span class="year-picker-range"></span>
+                <button class="year-picker-nav next" type="button">&gt;</button>
+            </div>
+            <div class="year-picker-grid"></div>
+            <div class="year-picker-footer">
+                <button class="year-picker-clear" type="button">Clear</button>
+            </div>
+        `;
+        document.body.appendChild(dropdown);
+
+        this.dropdown = dropdown;
         this.rangeSpan = this.dropdown.querySelector('.year-picker-range');
         this.grid = this.dropdown.querySelector('.year-picker-grid');
         this.prevBtn = this.dropdown.querySelector('.year-picker-nav.prev');
         this.nextBtn = this.dropdown.querySelector('.year-picker-nav.next');
         this.clearBtn = this.dropdown.querySelector('.year-picker-clear');
 
-        this.init();
-    }
-
-    createDropdownIfNeeded() {
-        if (!document.getElementById(this.dropdownId)) {
-            const dropdown = document.createElement('div');
-            dropdown.id = this.dropdownId;
-            dropdown.className = 'year-picker-dropdown';
-            dropdown.style.display = 'none'; // Ensure dropdown is hidden initially
-            dropdown.innerHTML = `
-                <div class="year-picker-header">
-                    <button class="year-picker-nav prev" type="button">&lt;</button>
-                    <span class="year-picker-range"></span>
-                    <button class="year-picker-nav next" type="button">&gt;</button>
-                </div>
-                <div class="year-picker-grid"></div>
-                <div class="year-picker-footer">
-                    <button class="year-picker-clear" type="button">Clear</button>
-                </div>
-            `;
-            document.body.appendChild(dropdown);
-        } else {
-            // If dropdown already exists, ensure it's hidden
-            const existingDropdown = document.getElementById(this.dropdownId);
-            existingDropdown.style.display = 'none';
-        }
+        // Bind navigation events after creation
+        this.bindNavigationEvents();
     }
 
     init() {
         // Find all year picker inputs and bind events
         this.bindGlobalEvents();
-        this.bindNavigationEvents();
         this.initializeInputs();
     }
 
@@ -70,6 +64,7 @@ class YearPicker {
         // Hide picker when clicking outside
         document.addEventListener('click', (e) => {
             if (this.isVisible && 
+                this.dropdown && 
                 !this.dropdown.contains(e.target) && 
                 !e.target.classList.contains('year-picker-input')) {
                 this.hidePicker();
@@ -102,6 +97,11 @@ class YearPicker {
     }
 
     showPicker(input) {
+        // Lazy create dropdown if not exists
+        if (!this.dropdown) {
+            this.createDropdown();
+        }
+
         this.currentInput = input;
 
         // Get min/max years from data attributes
@@ -126,7 +126,9 @@ class YearPicker {
     }
 
     hidePicker() {
-        this.dropdown.style.display = 'none';
+        if (this.dropdown) {
+            this.dropdown.style.display = 'none';
+        }
         this.isVisible = false;
         this.currentInput = null;
     }
