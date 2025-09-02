@@ -3,29 +3,50 @@
  * A reusable year picker component for Django forms and other applications
  */
 class PortableYearPicker {
-    constructor() {
+    constructor(options = {}) {
         this.currentInput = null;
         this.currentDecadeStart = null;
-        this.minYear = 1900;
+        this.minYear = 1974;
         this.maxYear = 2100;
         this.isVisible = false;
-        
-        this.dropdown = document.getElementById('year-picker-dropdown');
+        this.dropdownId = options.dropdownId || 'year-picker-dropdown';
+
+        // Auto-create dropdown if it doesn't exist
+        this.createDropdownIfNeeded();
+
+        this.dropdown = document.getElementById(this.dropdownId);
         this.rangeSpan = this.dropdown.querySelector('.year-picker-range');
         this.grid = this.dropdown.querySelector('.year-picker-grid');
         this.prevBtn = this.dropdown.querySelector('.year-picker-nav.prev');
         this.nextBtn = this.dropdown.querySelector('.year-picker-nav.next');
-        
+
         this.init();
     }
-    
+
+    createDropdownIfNeeded() {
+        if (!document.getElementById(this.dropdownId)) {
+            const dropdown = document.createElement('div');
+            dropdown.id = this.dropdownId;
+            dropdown.className = 'year-picker-dropdown';
+            dropdown.innerHTML = `
+                <div class="year-picker-header">
+                    <button class="year-picker-nav prev" type="button">&lt;</button>
+                    <span class="year-picker-range"></span>
+                    <button class="year-picker-nav next" type="button">&gt;</button>
+                </div>
+                <div class="year-picker-grid"></div>
+            `;
+            document.body.appendChild(dropdown);
+        }
+    }
+
     init() {
         // Find all year picker inputs and bind events
         this.bindGlobalEvents();
         this.bindNavigationEvents();
         this.initializeInputs();
     }
-    
+
     initializeInputs() {
         const inputs = document.querySelectorAll('.year-picker-input');
         inputs.forEach(input => {
@@ -34,7 +55,7 @@ class PortableYearPicker {
                 e.stopPropagation();
                 this.showPicker(input);
             });
-            
+
             // Make input readonly to prevent manual typing
             input.setAttribute('readonly', 'readonly');
         });
@@ -178,23 +199,85 @@ class PortableYearPicker {
     }
 }
 
-// Auto-initialize when DOM is loaded
+// Auto-initialize when DOM is loaded (for backward compatibility)
 document.addEventListener('DOMContentLoaded', function() {
-    window.yearPicker = new PortableYearPicker();
+    if (!window.yearPicker) {
+        window.yearPicker = new PortableYearPicker();
+    }
 });
 
-// Function to add year picker to new inputs dynamically
-window.addYearPicker = function(selector) {
+// Function to add year picker to specific field by ID
+window.initYearPicker = function(fieldId, options = {}) {
+    const input = document.getElementById(fieldId);
+    if (!input) {
+        console.warn(`Year picker: Field with ID '${fieldId}' not found`);
+        return null;
+    }
+    
+    // Create or get existing year picker instance
+    if (!window.yearPicker) {
+        window.yearPicker = new PortableYearPicker();
+    }
+    
+    // Add year picker functionality to the specific field
+    input.classList.add('year-picker-input');
+    input.setAttribute('readonly', 'readonly');
+    
+    // Set min/max years from options or data attributes
+    if (options.minYear) input.dataset.minYear = options.minYear;
+    if (options.maxYear) input.dataset.maxYear = options.maxYear;
+    if (options.defaultYear) input.value = options.defaultYear;
+    
+    // Remove existing event listeners to prevent duplicates
+    input.removeEventListener('click', input._yearPickerHandler);
+    
+    // Add click event listener
+    input._yearPickerHandler = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        window.yearPicker.showPicker(input);
+    };
+    input.addEventListener('click', input._yearPickerHandler);
+    
+    return window.yearPicker;
+};
+
+// Function to add year picker to multiple fields by selector
+window.addYearPicker = function(selector, options = {}) {
     const inputs = document.querySelectorAll(selector);
+    const results = [];
+    
     inputs.forEach(input => {
-        if (!input.classList.contains('year-picker-input')) {
-            input.classList.add('year-picker-input');
-            input.setAttribute('readonly', 'readonly');
-            input.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                window.yearPicker.showPicker(input);
-            });
+        if (input.id) {
+            results.push(window.initYearPicker(input.id, options));
+        } else {
+            // Generate ID if not present
+            const generatedId = 'year-picker-' + Math.random().toString(36).substr(2, 9);
+            input.id = generatedId;
+            results.push(window.initYearPicker(generatedId, options));
         }
     });
+    
+    return results;
+};
+
+// Function to remove year picker from a field
+window.removeYearPicker = function(fieldId) {
+    const input = document.getElementById(fieldId);
+    if (input && input._yearPickerHandler) {
+        input.removeEventListener('click', input._yearPickerHandler);
+        input.classList.remove('year-picker-input');
+        input.removeAttribute('readonly');
+        delete input._yearPickerHandler;
+    }
+};
+
+// Function to update year picker options for a field
+window.updateYearPicker = function(fieldId, options = {}) {
+    const input = document.getElementById(fieldId);
+    if (input) {
+        if (options.minYear !== undefined) input.dataset.minYear = options.minYear;
+        if (options.maxYear !== undefined) input.dataset.maxYear = options.maxYear;
+        if (options.value !== undefined) input.value = options.value;
+    }
 };
