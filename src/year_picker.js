@@ -25,6 +25,7 @@ class YearPicker {
             const dropdown = document.createElement('div');
             dropdown.id = this.dropdownId;
             dropdown.className = 'year-picker-dropdown';
+            dropdown.style.display = 'none'; // Ensure dropdown is hidden initially
             dropdown.innerHTML = `
                 <div class="year-picker-header">
                     <button class="year-picker-nav prev" type="button">&lt;</button>
@@ -37,6 +38,10 @@ class YearPicker {
                 </div>
             `;
             document.body.appendChild(dropdown);
+        } else {
+            // If dropdown already exists, ensure it's hidden
+            const existingDropdown = document.getElementById(this.dropdownId);
+            existingDropdown.style.display = 'none';
         }
     }
 
@@ -124,19 +129,6 @@ class YearPicker {
         this.dropdown.style.display = 'none';
         this.isVisible = false;
         this.currentInput = null;
-    }
-
-    positionDropdown(input) {
-        const rect = input.getBoundingClientRect();
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-
-        this.dropdown.style.position = 'absolute';
-        this.dropdown.style.left = (rect.left + scrollLeft) + 'px';
-        this.dropdown.style.top = (rect.bottom + scrollTop + 5) + 'px';
-
-        // Dynamic z-index calculation for modals
-        this.setModalZIndex(input);
     }
 
     positionDropdown(input) {
