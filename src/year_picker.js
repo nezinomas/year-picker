@@ -6,23 +6,23 @@ class PortableYearPicker {
     constructor(options = {}) {
         this.currentInput = null;
         this.currentDecadeStart = null;
-        this.minYear = 1974;
+        this.minYear = 1900;
         this.maxYear = 2100;
         this.isVisible = false;
         this.dropdownId = options.dropdownId || 'year-picker-dropdown';
-
+        
         // Auto-create dropdown if it doesn't exist
         this.createDropdownIfNeeded();
-
+        
         this.dropdown = document.getElementById(this.dropdownId);
         this.rangeSpan = this.dropdown.querySelector('.year-picker-range');
         this.grid = this.dropdown.querySelector('.year-picker-grid');
         this.prevBtn = this.dropdown.querySelector('.year-picker-nav.prev');
         this.nextBtn = this.dropdown.querySelector('.year-picker-nav.next');
-
+        
         this.init();
     }
-
+    
     createDropdownIfNeeded() {
         if (!document.getElementById(this.dropdownId)) {
             const dropdown = document.createElement('div');
@@ -39,14 +39,14 @@ class PortableYearPicker {
             document.body.appendChild(dropdown);
         }
     }
-
+    
     init() {
         // Find all year picker inputs and bind events
         this.bindGlobalEvents();
         this.bindNavigationEvents();
         this.initializeInputs();
     }
-
+    
     initializeInputs() {
         const inputs = document.querySelectorAll('.year-picker-input');
         inputs.forEach(input => {
@@ -55,7 +55,7 @@ class PortableYearPicker {
                 e.stopPropagation();
                 this.showPicker(input);
             });
-
+            
             // Make input readonly to prevent manual typing
             input.setAttribute('readonly', 'readonly');
         });
@@ -128,7 +128,135 @@ class PortableYearPicker {
         this.dropdown.style.position = 'absolute';
         this.dropdown.style.left = (rect.left + scrollLeft) + 'px';
         this.dropdown.style.top = (rect.bottom + scrollTop + 5) + 'px';
-        this.dropdown.style.zIndex = '1000';
+        
+        // Dynamic z-index calculation for modals
+        this.setModalZIndex(input);
+    }
+    
+    positionDropdown(input) {
+        const rect = input.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+        
+        // Use fixed positioning when inside modals to avoid scrolling issues
+        const modal = this.findParentModal(input);
+        
+        if (modal) {
+            // Fixed positioning relative to viewport (better for modals)
+            this.dropdown.style.position = 'fixed';
+            this.dropdown.style.left = rect.left + 'px';
+            this.dropdown.style.top = (rect.bottom + 5) + 'px';
+        } else {
+            // Absolute positioning for normal page content
+            this.dropdown.style.position = 'absolute';
+            this.dropdown.style.left = (rect.left + scrollLeft) + 'px';
+            this.dropdown.style.top = (rect.bottom + scrollTop + 5) + 'px';
+        }
+        
+        // Set appropriate z-index without removing existing classes
+        this.setModalZIndex(input, modal);
+        
+        // Ensure dropdown stays within viewport
+        this.adjustPositionIfNeeded();
+    }
+    
+    setModalZIndex(input, modal = null) {
+        if (!modal) {
+            modal = this.findParentModal(input);
+        }
+        
+        if (modal) {
+            const modalZIndex = this.getElementZIndex(modal);
+            let dropdownZIndex = Math.max(modalZIndex + 10, 9999);
+            
+            // Add a data attribute to indicate we're in a modal (non-intrusive)
+            this.dropdown.setAttribute('data-in-modal', 'true');
+            this.dropdown.setAttribute('data-modal-z-index', modalZIndex);
+            
+            // Apply z-index higher than the modal
+            this.dropdown.style.zIndex = dropdownZIndex;
+        } else {
+            // Not in modal - remove modal attributes and use default z-index
+            this.dropdown.removeAttribute('data-in-modal');
+            this.dropdown.removeAttribute('data-modal-z-index');
+            this.dropdown.style.zIndex = '9999';
+        }
+    }
+    
+    adjustPositionIfNeeded() {
+        // Adjust position if dropdown goes outside viewport
+        const rect = this.dropdown.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        
+        // Adjust horizontal position if needed
+        if (rect.right > viewportWidth) {
+            const overflow = rect.right - viewportWidth;
+            const currentLeft = parseInt(this.dropdown.style.left);
+            this.dropdown.style.left = (currentLeft - overflow - 10) + 'px';
+        }
+        
+        if (rect.left < 0) {
+            this.dropdown.style.left = '10px';
+        }
+        
+        // Adjust vertical position if needed (show above input if no space below)
+        if (rect.bottom > viewportHeight) {
+            const inputRect = this.currentInput.getBoundingClientRect();
+            if (this.dropdown.style.position === 'fixed') {
+                this.dropdown.style.top = (inputRect.top - rect.height - 5) + 'px';
+            } else {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                this.dropdown.style.top = (inputRect.top + scrollTop - rect.height - 5) + 'px';
+            }
+            
+            // Add class to indicate upward positioning (for styling if needed)
+            this.dropdown.setAttribute('data-positioned-above', 'true');
+        } else {
+            this.dropdown.removeAttribute('data-positioned-above');
+        }
+    }
+    
+    findParentModal(element) {
+        let parent = element.parentElement;
+        
+        while (parent && parent !== document.body) {
+            const computedStyle = window.getComputedStyle(parent);
+            const position = computedStyle.position;
+            const zIndex = computedStyle.zIndex;
+            
+            // Check for modal indicators
+            if (
+                // Bootstrap modals
+                parent.classList.contains('modal') ||
+                parent.classList.contains('modal-dialog') ||
+                // Generic modal patterns
+                (position === 'fixed' && (
+                    parent.classList.contains('modal') ||
+                    parent.classList.contains('dialog') ||
+                    parent.classList.contains('popup') ||
+                    parent.classList.contains('overlay')
+                )) ||
+                // High z-index fixed elements (likely modals)
+                (position === 'fixed' && parseInt(zIndex) > 100) ||
+                // Material-UI
+                parent.classList.contains('MuiModal-root') ||
+                parent.classList.contains('MuiDialog-root') ||
+                // Tailwind modal patterns
+                (parent.classList.contains('fixed') && parent.classList.contains('inset-0'))
+            ) {
+                return parent;
+            }
+            
+            parent = parent.parentElement;
+        }
+        
+        return null;
+    }
+    
+    getElementZIndex(element) {
+        const zIndex = window.getComputedStyle(element).zIndex;
+        return zIndex === 'auto' ? 0 : parseInt(zIndex) || 0;
     }
     
     navigateDecade(direction) {
@@ -272,6 +400,27 @@ window.removeYearPicker = function(fieldId) {
     }
 };
 
+// Function to initialize year picker with manual z-index override
+window.initYearPickerForModal = function(fieldId, options = {}) {
+    const picker = window.initYearPicker(fieldId, options);
+    
+    if (picker && picker.dropdown && options.zIndex) {
+        // Only override z-index if explicitly provided
+        picker.dropdown.style.zIndex = options.zIndex;
+        picker.dropdown.setAttribute('data-manual-z-index', options.zIndex);
+    }
+    
+    return picker;
+};
+
+// Function to set z-index manually for existing year picker
+window.setYearPickerZIndex = function(zIndex = 99999) {
+    if (window.yearPicker && window.yearPicker.dropdown) {
+        window.yearPicker.dropdown.style.zIndex = zIndex;
+        window.yearPicker.dropdown.setAttribute('data-manual-z-index', zIndex);
+    }
+};
+
 // Function to update year picker options for a field
 window.updateYearPicker = function(fieldId, options = {}) {
     const input = document.getElementById(fieldId);
@@ -279,5 +428,21 @@ window.updateYearPicker = function(fieldId, options = {}) {
         if (options.minYear !== undefined) input.dataset.minYear = options.minYear;
         if (options.maxYear !== undefined) input.dataset.maxYear = options.maxYear;
         if (options.value !== undefined) input.value = options.value;
+        if (options.zIndex !== undefined && window.yearPicker) {
+            window.yearPicker.dropdown.style.zIndex = options.zIndex;
+            window.yearPicker.dropdown.setAttribute('data-manual-z-index', options.zIndex);
+        }
+    }
+};
+
+// Function to reset year picker to auto-positioning (removes manual overrides)
+window.resetYearPickerPositioning = function() {
+    if (window.yearPicker && window.yearPicker.dropdown) {
+        window.yearPicker.dropdown.removeAttribute('data-manual-z-index');
+        window.yearPicker.dropdown.classList.remove('force-front');
+        // Re-position using current input
+        if (window.yearPicker.currentInput) {
+            window.yearPicker.positionDropdown(window.yearPicker.currentInput);
+        }
     }
 };
