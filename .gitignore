@@ -72,14 +72,11 @@ typings/
 
 # Nuxt.js build / generate output
 .nuxt
-dist/
 
 # Gatsby files
 .cache/
 public
 
-# Vuepress build output
-.vuepress/dist
 
 # Serverless directories
 .serverless/
@@ -131,10 +128,6 @@ $RECYCLE.BIN/
 # Logs
 logs
 *.log
-
-# Build artifacts (if you want to ignore dist folder)
-# Uncomment the line below if you want to ignore built files
-# dist/
 
 # Temporary files
 temp/
