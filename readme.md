@@ -27,8 +27,7 @@ year-picker/
 │   └── year-picker.min.css # Minified CSS
 ├── examples/
 │   ├── basic.html          # Basic usage example
-│   ├── django-example.html # Django integration
-│   └── multiple-fields.html# Multiple fields demo
+│   └── django-example.html # Django integration
 ├── package.json
 ├── README.md
 ├── LICENSE
